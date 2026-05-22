@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hitster</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1DB954;
+      --bg: #121212;
+      --surface: #282828;
+      --surface2: #3e3e3e;
+      --text: #ffffff;
+      --muted: #b3b3b3;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 28px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header {
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* ── SCANNER ── */
+
+    #scanner-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #reader {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* suppress html5-qrcode default borders */
+    #reader > div { border: none !important; }
+    #reader video { border-radius: 16px !important; }
+
+    .scan-hint {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .error-banner {
+      background: #3a1515;
+      border: 1px solid #7f2020;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #ff7070;
+      text-align: center;
+    }
+
+    /* ── PLAYER ── */
+
+    #player-section {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .player-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 28px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* animated waveform */
+    .waveform {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 40px;
+    }
+
+    .waveform span {
+      display: block;
+      width: 5px;
+      border-radius: 3px;
+      background: var(--green);
+      animation: wave 1.1s ease-in-out infinite;
+    }
+
+    .waveform span:nth-child(1) { height: 14px; animation-delay: 0.0s; }
+    .waveform span:nth-child(2) { height: 30px; animation-delay: 0.15s; }
+    .waveform span:nth-child(3) { height: 20px; animation-delay: 0.3s; }
+    .waveform span:nth-child(4) { height: 36px; animation-delay: 0.45s; }
+    .waveform span:nth-child(5) { height: 16px; animation-delay: 0.6s; }
+    .waveform span:nth-child(6) { height: 26px; animation-delay: 0.75s; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.7; }
+      50%       { transform: scaleY(1.0); opacity: 1;   }
+    }
+
+    .now-playing-label {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: -0.3px;
+    }
+
+    .play-hint {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* Spotify embed + blocker */
+    .embed-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .embed-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 80px;
+      border: none;
+    }
+
+    /*
+      Covers album art + track/artist text.
+      Leaves ~110px on the right for Spotify's play controls.
+      pointer-events: none so taps still reach the iframe controls underneath.
+    */
+    .track-blocker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(100% - 110px);
+      height: 100%;
+      background: #282828;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .mini-wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 18px;
+    }
+
+    .mini-wave span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--green);
+      animation: wave 1.1s ease-in-out infinite;
+    }
+
+    .mini-wave span:nth-child(1) { height: 6px;  animation-delay: 0.0s; }
+    .mini-wave span:nth-child(2) { height: 14px; animation-delay: 0.2s; }
+    .mini-wave span:nth-child(3) { height: 9px;  animation-delay: 0.4s; }
+    .mini-wave span:nth-child(4) { height: 16px; animation-delay: 0.6s; }
+
+    /* Scan next button */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🎵 Hitster</h1>
+    <p>Scan the QR code — guess the year before revealing!</p>
+  </header>
+
+  <!-- ── Scanner view ── -->
+  <div id="scanner-section">
+    <div id="reader"></div>
+    <p class="scan-hint">Point the camera at the QR code on the back of a card</p>
+    <div id="error-banner" class="error-banner" style="display:none;"></div>
+  </div>
+
+  <!-- ── Player view ── -->
+  <div id="player-section">
+    <div class="player-card">
+      <div class="waveform">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="now-playing-label">Now Playing</div>
+      <p class="play-hint">Tap ▶ on the right to start the song.<br>Guess the year — then flip the card!</p>
+
+      <!-- Spotify embed; track name hidden by .track-blocker -->
+      <div class="embed-wrapper">
+        <iframe
+          id="spotify-embed"
+          src=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+        <div class="track-blocker">
+          <div class="mini-wave">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="startScanning()">Scan next card</button>
+  </div>
+
+</div>
+
+<script>
+  let scanner = null;
+  let active = false;
+
+  function extractTrackId(text) {
+    // https://open.spotify.com/track/ID  or  spotify:track:ID
+    const m = text.match(/(?:open\.spotify\.com\/track\/|spotify:track:)([A-Za-z0-9]+)/);
+    return m ? m[1] : null;
+  }
+
+  async function startScanning() {
+    setView('scanner');
+    hideError();
+
+    document.getElementById('spotify-embed').src = '';
+
+    if (scanner) {
+      try { await scanner.stop(); } catch (_) {}
+      scanner = null;
+    }
+
+    scanner = new Html5Qrcode('reader');
+    active = true;
+
+    try {
+      await scanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 230, height: 230 } },
+        onScan,
+        () => {}
+      );
+    } catch {
+      showError('Camera access denied — please allow camera permission and reload the page.');
+    }
+  }
+
+  function onScan(text) {
+    if (!active) return;
+
+    const trackId = extractTrackId(text);
+
+    if (!trackId) {
+      showError('Not a Spotify song QR code. Please try again.');
+      return;
+    }
+
+    active = false;
+    if (scanner) scanner.stop().catch(() => {});
+
+    document.getElementById('spotify-embed').src =
+      `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+
+    setView('player');
+  }
+
+  function setView(view) {
+    document.getElementById('scanner-section').style.display = view === 'scanner' ? 'flex' : 'none';
+    document.getElementById('player-section').style.display  = view === 'player'  ? 'flex' : 'none';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-banner');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideError() {
+    document.getElementById('error-banner').style.display = 'none';
+  }
+
+  // Boot
+  startScanning();
+</script>
+</body>
+</html>
