@@ -10,10 +10,10 @@
 
     :root {
       --green: #1DB954;
-      --bg: #121212;
-      --surface: #282828;
-      --surface2: #3e3e3e;
-      --text: #ffffff;
+      --bg:    #121212;
+      --surf:  #282828;
+      --surf2: #3e3e3e;
+      --text:  #ffffff;
       --muted: #b3b3b3;
     }
 
@@ -30,197 +30,144 @@
     .container {
       width: 100%;
       max-width: 480px;
-      padding: 28px 20px 40px;
+      padding: 28px 20px 48px;
       display: flex;
       flex-direction: column;
       gap: 24px;
     }
 
-    header {
-      text-align: center;
-    }
+    header { text-align: center; }
+    header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+    header p  { color: var(--muted); font-size: 13px; margin-top: 4px; }
 
-    header h1 {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
+    /* ── Views ── */
+    .view { display: none; flex-direction: column; gap: 16px; }
+    .view.active { display: flex; }
 
-    header p {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    /* ── SCANNER ── */
-
-    #scanner-section {
+    /* ── Card ── */
+    .card {
+      background: var(--surf);
+      border-radius: 20px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
+    .card h2 { font-size: 17px; font-weight: 700; }
+    .card p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    #reader {
+    /* ── Buttons ── */
+    .btn {
       width: 100%;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #000;
+      padding: 15px;
+      border: none;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: transform .1s, opacity .1s;
     }
+    .btn:active { transform: scale(.97); opacity: .85; }
 
-    /* suppress html5-qrcode default borders */
-    #reader > div { border: none !important; }
-    #reader video { border-radius: 16px !important; }
-
-    .scan-hint {
-      text-align: center;
-      font-size: 13px;
+    .btn-green { background: var(--green); color: #000; }
+    .btn-ghost {
+      background: transparent;
       color: var(--muted);
+      border: 1px solid var(--surf2);
+      font-size: 13px;
     }
 
-    .error-banner {
+    /* ── QR scanner ── */
+    #reader { width: 100%; border-radius: 16px; overflow: hidden; background: #000; }
+    #reader > div    { border: none !important; }
+    #reader video    { border-radius: 16px !important; }
+    .scan-hint       { text-align: center; font-size: 13px; color: var(--muted); }
+
+    /* ── Error banner ── */
+    .error {
       background: #3a1515;
       border: 1px solid #7f2020;
       border-radius: 10px;
-      padding: 12px 16px;
+      padding: 11px 15px;
       font-size: 13px;
       color: #ff7070;
       text-align: center;
     }
 
-    /* ── PLAYER ── */
-
-    #player-section {
-      display: none;
-      flex-direction: column;
-      gap: 20px;
-    }
-
+    /* ── Player card ── */
     .player-card {
-      background: var(--surface);
+      background: var(--surf);
       border-radius: 20px;
-      padding: 28px 24px 20px;
+      padding: 36px 24px 28px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
     }
 
-    /* animated waveform */
+    /* Waveform */
     .waveform {
       display: flex;
       align-items: flex-end;
       gap: 4px;
-      height: 40px;
+      height: 48px;
     }
-
     .waveform span {
       display: block;
       width: 5px;
       border-radius: 3px;
       background: var(--green);
+      opacity: .5;
+      transform: scaleY(.4);
+    }
+    .waveform.live span {
+      opacity: 1;
+      transform: none;
       animation: wave 1.1s ease-in-out infinite;
     }
-
-    .waveform span:nth-child(1) { height: 14px; animation-delay: 0.0s; }
-    .waveform span:nth-child(2) { height: 30px; animation-delay: 0.15s; }
-    .waveform span:nth-child(3) { height: 20px; animation-delay: 0.3s; }
-    .waveform span:nth-child(4) { height: 36px; animation-delay: 0.45s; }
-    .waveform span:nth-child(5) { height: 16px; animation-delay: 0.6s; }
-    .waveform span:nth-child(6) { height: 26px; animation-delay: 0.75s; }
+    .waveform span:nth-child(1) { height: 14px; animation-delay: .00s; }
+    .waveform span:nth-child(2) { height: 30px; animation-delay: .15s; }
+    .waveform span:nth-child(3) { height: 20px; animation-delay: .30s; }
+    .waveform span:nth-child(4) { height: 36px; animation-delay: .45s; }
+    .waveform span:nth-child(5) { height: 16px; animation-delay: .60s; }
+    .waveform span:nth-child(6) { height: 26px; animation-delay: .75s; }
 
     @keyframes wave {
-      0%, 100% { transform: scaleY(0.4); opacity: 0.7; }
-      50%       { transform: scaleY(1.0); opacity: 1;   }
+      0%, 100% { transform: scaleY(.4); }
+      50%       { transform: scaleY(1.0); }
     }
 
-    .now-playing-label {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--green);
-      letter-spacing: -0.3px;
-    }
-
-    .play-hint {
+    .player-status {
       font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       color: var(--muted);
-      text-align: center;
-      line-height: 1.5;
+    }
+    .player-status.live { color: var(--green); }
+
+    .time-display {
+      font-size: 52px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
+      line-height: 1;
     }
 
-    /* Spotify embed + blocker */
-    .embed-wrapper {
-      position: relative;
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .embed-wrapper iframe {
-      display: block;
-      width: 100%;
-      height: 80px;
-      border: none;
-    }
-
-    /*
-      Covers album art + track/artist text.
-      Leaves ~110px on the right for Spotify's play controls.
-      pointer-events: none so taps still reach the iframe controls underneath.
-    */
-    .track-blocker {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: calc(100% - 110px);
-      height: 100%;
-      background: #282828;
-      pointer-events: none;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-
-    .mini-wave {
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 18px;
-    }
-
-    .mini-wave span {
-      display: block;
-      width: 3px;
-      border-radius: 2px;
-      background: var(--green);
-      animation: wave 1.1s ease-in-out infinite;
-    }
-
-    .mini-wave span:nth-child(1) { height: 6px;  animation-delay: 0.0s; }
-    .mini-wave span:nth-child(2) { height: 14px; animation-delay: 0.2s; }
-    .mini-wave span:nth-child(3) { height: 9px;  animation-delay: 0.4s; }
-    .mini-wave span:nth-child(4) { height: 16px; animation-delay: 0.6s; }
-
-    /* Scan next button */
-    .btn-primary {
-      width: 100%;
-      padding: 16px;
+    .btn-circle {
+      width: 68px; height: 68px;
+      border-radius: 50%;
       background: var(--green);
       color: #000;
       border: none;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 28px;
       cursor: pointer;
-      letter-spacing: 0.3px;
-      transition: transform 0.1s, opacity 0.1s;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .1s, opacity .1s;
+      flex-shrink: 0;
     }
-
-    .btn-primary:active {
-      transform: scale(0.97);
-      opacity: 0.85;
-    }
+    .btn-circle:active { transform: scale(.93); opacity: .85; }
   </style>
 </head>
 <body>
@@ -228,118 +175,391 @@
 
   <header>
     <h1>🎵 Spotster</h1>
+    <p>Scan the QR code — guess the year before revealing!</p>
   </header>
 
-  <!-- ── Scanner view ── -->
-  <div id="scanner-section">
-    <div id="reader"></div>
-    <p class="scan-hint">Point the camera at the QR code on the back of a card</p>
-    <div id="error-banner" class="error-banner" style="display:none;"></div>
+  <!-- ── Auth: log in with Spotify ── -->
+  <div id="view-auth" class="view">
+    <div class="card">
+      <h2>Connect Spotify</h2>
+      <p>Log in with your Spotify Premium account. You only need to do this once.</p>
+      <button class="btn btn-green" onclick="loginWithSpotify()">Log in with Spotify</button>
+    </div>
+    <div id="auth-error" class="error" style="display:none;"></div>
   </div>
 
-  <!-- ── Player view ── -->
-  <div id="player-section">
+  <!-- ── Scanner ── -->
+  <div id="view-scanner" class="view">
+    <div id="reader"></div>
+    <p class="scan-hint">Point the camera at the QR code on the back of a card</p>
+    <div id="scan-error" class="error" style="display:none;"></div>
+    <button class="btn btn-ghost" onclick="logOut()">Log out</button>
+  </div>
+
+  <!-- ── Player ── -->
+  <div id="view-player" class="view">
     <div class="player-card">
-      <div class="waveform">
+      <div class="waveform" id="waveform">
         <span></span><span></span><span></span>
         <span></span><span></span><span></span>
       </div>
-      <div class="now-playing-label">Now Playing</div>
-      <p class="play-hint">Tap ▶ on the right to start the song.</p>
-
-      <!-- Spotify embed; track name hidden by .track-blocker -->
-      <div class="embed-wrapper">
-        <iframe
-          id="spotify-embed"
-          src=""
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy">
-        </iframe>
-        <div class="track-blocker">
-          <div class="mini-wave">
-            <span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-      </div>
+      <div class="player-status" id="player-status">Ready</div>
+      <div class="time-display" id="time-display">0:00</div>
+      <button class="btn-circle" id="btn-play-pause" onclick="tapPlayPause()">▶</button>
     </div>
-
-    <button class="btn-primary" onclick="startScanning()">Scan next card</button>
+    <button class="btn btn-green" onclick="scanNext()">Scan next card</button>
+    <button class="btn btn-ghost" onclick="logOut()">Log out</button>
   </div>
 
 </div>
 
+<!-- Spotify Web Playback SDK -->
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
 <script>
-  let scanner = null;
-  let active = false;
+// ─── Config ──────────────────────────────────────────────────────────────────
+const CLIENT_ID = 'bb6ba9ad5d4e4e13aa8190375e13d77c';
 
-  function extractTrackId(text) {
-    // https://open.spotify.com/track/ID  or  spotify:track:ID
-    const m = text.match(/(?:open\.spotify\.com\/track\/|spotify:track:)([A-Za-z0-9]+)/);
-    return m ? m[1] : null;
+// ─── Persistence keys ────────────────────────────────────────────────────────
+const K = {
+  accessToken:  'sp_access_token',
+  refreshToken: 'sp_refresh_token',
+  tokenExpiry:  'sp_token_expiry',
+};
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let accessToken  = localStorage.getItem(K.accessToken)  || '';
+let refreshToken = localStorage.getItem(K.refreshToken) || '';
+let tokenExpiry  = parseInt(localStorage.getItem(K.tokenExpiry) || '0');
+
+let player     = null;
+let deviceId   = null;
+let sdkReady   = false;
+
+let pendingTrackId = null;   // scanned while device not yet ready
+let loadedTrackId  = null;   // track in player, awaiting tap-to-play
+
+let tickInterval  = null;
+let tickBase      = 0;   // ms of playback position at last state-change
+let tickTimestamp = 0;   // real time at last state-change
+let isPlaying     = false;
+
+let qrScanner = null;
+let scanning  = false;
+
+// ─── PKCE helpers ────────────────────────────────────────────────────────────
+function b64url(buf) {
+  return btoa(String.fromCharCode(...buf))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+async function generatePKCE() {
+  const verifier  = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const hash      = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+  const challenge = b64url(new Uint8Array(hash));
+  return { verifier, challenge };
+}
+
+function redirectUri() {
+  return window.location.origin + window.location.pathname;
+}
+
+// ─── OAuth / token management ────────────────────────────────────────────────
+async function loginWithSpotify() {
+  const { verifier, challenge } = await generatePKCE();
+  sessionStorage.setItem('pkce_v', verifier);
+
+  const p = new URLSearchParams({
+    client_id:             CLIENT_ID,
+    response_type:         'code',
+    redirect_uri:          redirectUri(),
+    scope:                 'streaming user-read-email user-read-private',
+    code_challenge_method: 'S256',
+    code_challenge:        challenge,
+  });
+  window.location.href = 'https://accounts.spotify.com/authorize?' + p;
+}
+
+async function handleCallback() {
+  const p     = new URLSearchParams(window.location.search);
+  const code  = p.get('code');
+  const error = p.get('error');
+
+  if (error) { setError('auth', 'Spotify login error: ' + error); showView('auth'); return false; }
+  if (!code)  return false;
+
+  history.replaceState({}, '', location.pathname);
+
+  const verifier = sessionStorage.getItem('pkce_v');
+  sessionStorage.removeItem('pkce_v');
+  if (!verifier) { showView('auth'); return false; }
+
+  const res  = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code', code,
+      redirect_uri: redirectUri(), client_id: CLIENT_ID, code_verifier: verifier,
+    }),
+  });
+  const data = await res.json();
+
+  if (data.error) { setError('auth', data.error_description || data.error); showView('auth'); return false; }
+  storeTokens(data);
+  return true;
+}
+
+function storeTokens(data) {
+  accessToken  = data.access_token;
+  refreshToken = data.refresh_token || refreshToken;
+  tokenExpiry  = Date.now() + (data.expires_in - 60) * 1000;
+  localStorage.setItem(K.accessToken,  accessToken);
+  localStorage.setItem(K.refreshToken, refreshToken);
+  localStorage.setItem(K.tokenExpiry,  String(tokenExpiry));
+}
+
+async function ensureToken() {
+  if (accessToken && Date.now() < tokenExpiry) return true;
+  if (!refreshToken) return false;
+
+  const res  = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token', refresh_token: refreshToken, client_id: CLIENT_ID,
+    }),
+  });
+  const data = await res.json();
+  if (data.error) { wipeTokens(); return false; }
+  storeTokens(data);
+  return true;
+}
+
+function wipeTokens() {
+  accessToken = refreshToken = '';
+  tokenExpiry = 0;
+  Object.values(K).forEach(k => localStorage.removeItem(k));
+}
+
+function logOut() {
+  wipeTokens();
+  if (player) { player.disconnect(); player = null; }
+  deviceId = null;
+  stopTick();
+  showView('auth');
+}
+
+// ─── Spotify Web Playback SDK ─────────────────────────────────────────────────
+window.onSpotifyWebPlaybackSDKReady = () => {
+  sdkReady = true;
+  if (accessToken) initPlayer();
+};
+
+function initPlayer() {
+  if (player) return;
+
+  player = new Spotify.Player({
+    name: 'Spotster',
+    getOAuthToken: async cb => { await ensureToken(); cb(accessToken); },
+    volume: 1.0,
+  });
+
+  player.addListener('ready', ({ device_id }) => {
+    deviceId = device_id;
+    if (pendingTrackId) { prepareTrack(pendingTrackId); pendingTrackId = null; }
+  });
+
+  player.addListener('not_ready', () => { deviceId = null; });
+
+  player.addListener('player_state_changed', state => {
+    if (!state) return;
+
+    isPlaying     = !state.paused;
+    tickBase      = state.position;
+    tickTimestamp = Date.now();
+
+    setWaveform(isPlaying);
+    setStatus(isPlaying);
+    document.getElementById('btn-play-pause').textContent = state.paused ? '▶' : '⏸';
+    setTimeDisplay(state.position);
+
+    isPlaying ? startTick() : stopTick();
+  });
+
+  player.addListener('authentication_error', () => { wipeTokens(); showView('auth'); });
+  player.addListener('account_error', () => {
+    setError('scan', 'Spotify Premium is required for full playback.');
+  });
+
+  player.connect();
+}
+
+// ─── Track playback ──────────────────────────────────────────────────────────
+function onTrackScanned(trackId) {
+  stopScanner();
+  loadedTrackId = null;
+
+  setWaveform(false);
+  setStatus(false);
+  setTimeDisplay(0);
+  document.getElementById('btn-play-pause').textContent = '▶';
+  stopTick();
+  isPlaying = false;
+
+  showView('player');
+
+  if (deviceId) {
+    prepareTrack(trackId);
+  } else {
+    pendingTrackId = trackId;
+  }
+}
+
+function prepareTrack(trackId) {
+  loadedTrackId = trackId;
+}
+
+async function tapPlayPause() {
+  if (loadedTrackId) {
+    const trackId = loadedTrackId;
+    loadedTrackId = null;
+    try { player.activateElement(); } catch (_) {}
+    await startTrack(trackId);
+    return;
+  }
+  if (player) player.togglePlay();
+}
+
+async function startTrack(trackId) {
+  const ok = await ensureToken();
+  if (!ok) { showView('auth'); return; }
+
+  await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ uris: [`spotify:track:${trackId}`], position_ms: 0 }),
+  });
+
+  tickBase      = 0;
+  tickTimestamp = Date.now();
+  isPlaying     = true;
+  setWaveform(true);
+  setStatus(true);
+  document.getElementById('btn-play-pause').textContent = '⏸';
+  startTick();
+}
+
+// ─── Progress tick ────────────────────────────────────────────────────────────
+function startTick() {
+  stopTick();
+  tickInterval = setInterval(() => {
+    if (!isPlaying) return;
+    setTimeDisplay(tickBase + (Date.now() - tickTimestamp));
+  }, 500);
+}
+
+function stopTick() {
+  if (tickInterval) { clearInterval(tickInterval); tickInterval = null; }
+}
+
+function setTimeDisplay(ms) {
+  const s = Math.floor(ms / 1000);
+  document.getElementById('time-display').textContent =
+    `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+// ─── Player UI helpers ────────────────────────────────────────────────────────
+function setWaveform(live) {
+  document.getElementById('waveform').classList.toggle('live', live);
+}
+
+function setStatus(live) {
+  const el = document.getElementById('player-status');
+  el.textContent = live ? 'Now Playing' : 'Ready';
+  el.classList.toggle('live', live);
+}
+
+// ─── QR scanner ──────────────────────────────────────────────────────────────
+function extractTrackId(text) {
+  const m = text.match(/(?:open\.spotify\.com\/track\/|spotify:track:)([A-Za-z0-9]+)/);
+  return m ? m[1] : null;
+}
+
+async function startScanner() {
+  if (qrScanner) { try { await qrScanner.stop(); } catch (_) {} qrScanner = null; }
+
+  qrScanner = new Html5Qrcode('reader');
+  scanning  = true;
+  clearError('scan');
+
+  try {
+    await qrScanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 230, height: 230 } },
+      onQrSuccess,
+      () => {}
+    );
+  } catch {
+    setError('scan', 'Camera access denied — please allow camera permission and reload.');
+  }
+}
+
+function stopScanner() {
+  scanning = false;
+  if (qrScanner) { qrScanner.stop().catch(() => {}); }
+}
+
+function onQrSuccess(text) {
+  if (!scanning) return;
+  const trackId = extractTrackId(text);
+  if (!trackId) { setError('scan', 'Not a Spotify song QR code — try again.'); return; }
+  scanning = false;
+  onTrackScanned(trackId);
+}
+
+async function scanNext() {
+  if (player) await player.pause().catch(() => {});
+  stopTick();
+  isPlaying = false;
+  showView('scanner');
+  startScanner();
+}
+
+// ─── View management ──────────────────────────────────────────────────────────
+function showView(name) {
+  ['auth', 'scanner', 'player'].forEach(v =>
+    document.getElementById('view-' + v).classList.toggle('active', v === name)
+  );
+}
+
+function setError(view, msg) {
+  const el = document.getElementById(view + '-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+
+function clearError(view) {
+  const el = document.getElementById(view + '-error');
+  if (el) el.style.display = 'none';
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+async function init() {
+  if (location.search.includes('code=') || location.search.includes('error=')) {
+    const ok = await handleCallback();
+    if (!ok) return;
   }
 
-  async function startScanning() {
-    setView('scanner');
-    hideError();
+  if (!accessToken && !refreshToken) { showView('auth'); return; }
 
-    document.getElementById('spotify-embed').src = '';
+  const ok = await ensureToken();
+  if (!ok) { showView('auth'); return; }
 
-    if (scanner) {
-      try { await scanner.stop(); } catch (_) {}
-      scanner = null;
-    }
+  if (sdkReady) initPlayer();
 
-    scanner = new Html5Qrcode('reader');
-    active = true;
+  showView('scanner');
+  startScanner();
+}
 
-    try {
-      await scanner.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 230, height: 230 } },
-        onScan,
-        () => {}
-      );
-    } catch {
-      showError('Camera access denied — please allow camera permission and reload the page.');
-    }
-  }
-
-  function onScan(text) {
-    if (!active) return;
-
-    const trackId = extractTrackId(text);
-
-    if (!trackId) {
-      showError('Not a Spotify song QR code. Please try again.');
-      return;
-    }
-
-    active = false;
-    if (scanner) scanner.stop().catch(() => {});
-
-    document.getElementById('spotify-embed').src =
-      `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
-
-    setView('player');
-  }
-
-  function setView(view) {
-    document.getElementById('scanner-section').style.display = view === 'scanner' ? 'flex' : 'none';
-    document.getElementById('player-section').style.display  = view === 'player'  ? 'flex' : 'none';
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('error-banner');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-
-  function hideError() {
-    document.getElementById('error-banner').style.display = 'none';
-  }
-
-  // Boot
-  startScanning();
+init();
 </script>
 </body>
 </html>
